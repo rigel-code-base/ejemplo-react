@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import CatView from "./components/molecules/catView";
+import Button from "./components/atoms/button";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+/*
+  Props -> x
+  Hooks -> useState
+  Axios -> x
+  Tailwind -> .
+  Async -> .
+*/
 
 function App() {
+  const [gato, setGato] = useState({});
+
+  useEffect(() => {
+    generarGato();
+  }, []);
+
+  const generarGato = async () => {
+    try {
+      const req = await axios.get("https://thatcopy.pw/catapi/rest/");
+      const data = req.data;
+      setGato({ imagen: data.webpurl, id: data.id });
+    } catch {
+      console.log("error");
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CatView imagen={gato.imagen} id={gato.id} />
+      <Button texto="Cambiar gato" cuandoClick={generarGato} />
     </div>
   );
 }
